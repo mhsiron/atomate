@@ -89,7 +89,8 @@ class StaticFW(Firework):
 
     def __init__(self, structure=None, name="static", vasp_input_set=None, vasp_input_set_params=None,
                  vasp_cmd="vasp", prev_calc_loc=True, prev_calc_dir=None, db_file=None, vasptodb_kwargs=None,
-                 parents=None, additional_files=None,contcar_to_poscar=True,user_incar_settings={},custom_hubbard={},**kwargs):
+                 parents=None, additional_files=None,contcar_to_poscar=True,user_incar_settings={},custom_hubbard={},
+                 **kwargs):
         """
         Standard static calculation Firework - either from a previous location or from a structure.
 
@@ -134,7 +135,7 @@ class StaticFW(Firework):
             if prev_calc_loc:
                 t.append(CopyVaspOutputs(calc_loc=prev_calc_loc, additional_files=additional_files,
                                          contcar_to_poscar=contcar_to_poscar))
-            t.append(WriteVaspStaticFromPrev(other_params=vasp_input_set_params))
+            t.append(WriteVaspStaticFromPrev(other_params=vasp_input_set_params, custom_hubbard=custom_hubbard))
         elif structure:
             vasp_input_set = vasp_input_set or MPStaticSet(structure, user_incar_settings=user_incar_settings, 
                                                             custom_hubbard=custom_hubbard)
