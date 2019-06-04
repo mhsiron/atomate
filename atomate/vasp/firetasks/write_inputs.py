@@ -234,7 +234,7 @@ class WriteVaspStaticFromPrev(FiretaskBase):
         default_reciprocal_density = 200 if lepsilon else 100  # more k-points for dielectric calc.
         other_params = self.get("other_params", {})
         user_incar_settings = other_params.get("user_incar_settings", {})
-        custom_hubbard = other_params.get("custom_hubbard", {})
+        custom_hubbard = self.get("custom_hubbard", {})
         print("CH: " + str(custom_hubbard))
 
         # for lepsilon runs, set EDIFF to 1E-5 unless user says otherwise
