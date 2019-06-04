@@ -135,7 +135,8 @@ class StaticFW(Firework):
             if prev_calc_loc:
                 t.append(CopyVaspOutputs(calc_loc=prev_calc_loc, additional_files=additional_files,
                                          contcar_to_poscar=contcar_to_poscar))
-            t.append(WriteVaspStaticFromPrev(other_params=vasp_input_set_params, custom_hubbard=custom_hubbard, structure_from_prev))
+            t.append(WriteVaspStaticFromPrev(other_params=vasp_input_set_params, custom_hubbard=custom_hubbard, 
+                                            structure_from_prev= structure_from_prev))
         elif structure:
             vasp_input_set = vasp_input_set or MPStaticSet(structure, user_incar_settings=user_incar_settings, 
                                                             custom_hubbard=custom_hubbard)
