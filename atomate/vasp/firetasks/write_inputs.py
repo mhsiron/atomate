@@ -238,6 +238,9 @@ class WriteVaspStaticFromPrev(FiretaskBase):
         #pass custom hubbard parameters if they exist
         custom_hubbard = self.get("custom_hubbard", {})
 
+        #Don't get the structure from previous run
+        structure_from_prev_run = self.get("structure_from_prev_run", True)
+
         # for lepsilon runs, set EDIFF to 1E-5 unless user says otherwise
         if lepsilon and "EDIFF" not in user_incar_settings and \
                         "EDIFF_PER_ATOM" not in user_incar_settings:
@@ -253,7 +256,8 @@ class WriteVaspStaticFromPrev(FiretaskBase):
                                          sym_prec=self.get("sym_prec", 0.1),
                                          international_monoclinic=self.get(
                                              "international_monoclinic", True),
-                                         lepsilon=lepsilon, custom_hubbard=custom_hubbard, **other_params)
+                                         lepsilon=lepsilon, custom_hubbard=custom_hubbard, 
+                                         structure_from_prev_run = structure_from_prev_run,**other_params)
         vis.write_input(".")
 
 
