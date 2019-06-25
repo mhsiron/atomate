@@ -250,6 +250,7 @@ class WriteVaspStaticFromPrev(FiretaskBase):
 
         print(self.get("vasp_input_params", {}))
         print(other_params)
+        print(custom_hubbard)
 
         vis = MPStaticSet.from_prev_calc(structure = self.get("structure"),prev_calc_dir=self.get("prev_calc_dir", "."),
                                          reciprocal_density=self.get("reciprocal_density",
