@@ -226,7 +226,8 @@ class WriteVaspStaticFromPrev(FiretaskBase):
     """
 
     optional_params = ["prev_calc_dir", "reciprocal_density", "small_gap_multiply", "standardize",
-                       "sym_prec", "international_monoclinic", "lepsilon", "other_params"]
+                       "sym_prec", "international_monoclinic", "lepsilon", "other_params","custom_hubbard",
+                       "structure_from_prev_run",""]
 
     def run_task(self, fw_spec):
         lepsilon = self.get("lepsilon")
@@ -238,8 +239,10 @@ class WriteVaspStaticFromPrev(FiretaskBase):
         #pass custom hubbard parameters if they exist
         custom_hubbard = self.get("custom_hubbard", {})
 
+
         #Don't get the structure from previous run
         structure_from_prev_run = self.get("structure_from_prev_run", True)
+
 
         # for lepsilon runs, set EDIFF to 1E-5 unless user says otherwise
         if lepsilon and "EDIFF" not in user_incar_settings and \
@@ -247,11 +250,6 @@ class WriteVaspStaticFromPrev(FiretaskBase):
             if "user_incar_settings" not in other_params:
                 other_params["user_incar_settings"] = {}
             other_params["user_incar_settings"]["EDIFF"] = 1E-5
-
-        print(self.get("vasp_input_params", {}))
-        print(other_params)
-        print(custom_hubbard)
-        print(self.get("structure").formula)
 
         vis = MPStaticSet.from_prev_calc(structure = self.get("structure"),prev_calc_dir=self.get("prev_calc_dir", "."),
                                          reciprocal_density=self.get("reciprocal_density",
