@@ -90,7 +90,7 @@ class StaticFW(Firework):
     def __init__(self, structure=None, name="static", vasp_input_set=None, vasp_input_set_params=None,
                  vasp_cmd="vasp", prev_calc_loc=True, prev_calc_dir=None, db_file=None, vasptodb_kwargs=None,
                  parents=None, additional_files=None,contcar_to_poscar=True,user_incar_settings={},custom_hubbard={},
-                 structure_from_prev_run=False,**kwargs):
+                 structure_from_prev_run=False,runvaspcustodian_kwargs=None,**kwargs):
         """
         Standard static calculation Firework - either from a previous location or from a structure.
 
@@ -116,12 +116,14 @@ class StaticFW(Firework):
                 This is passed to the CopyVaspOutput if parent is found
             user_incar_settings (dict): Custom INCAR parameters to pass
             custom_hubbard (dict): needs: {"site_specific_hubbard":{LDAUL = [0,0,0]},"specie_map"{"Xx":"Fe"}}
+            runvaspcustodian_kwargs (dict): passed to RunVaspCustodian. Helpfull for choosing no error groups for ie.
             \*\*kwargs: Other kwargs that are passed to Firework.__init__.
         """
         t = []
 
         vasp_input_set_params = vasp_input_set_params or {}
         vasptodb_kwargs = vasptodb_kwargs or {}
+        runvaspcustodian_kwargs = runvaspcustodian_kwargs or {}
         if "additional_fields" not in vasptodb_kwargs:
             vasptodb_kwargs["additional_fields"] = {}
         vasptodb_kwargs["additional_fields"]["task_label"] = name
@@ -148,7 +150,7 @@ class StaticFW(Firework):
         else:
             raise ValueError("Must specify structure or previous calculation")
 
-        t.append(RunVaspCustodian(vasp_cmd=vasp_cmd, auto_npar=">>auto_npar<<"))
+        t.append(RunVaspCustodian(vasp_cmd=vasp_cmd, auto_npar=">>auto_npar<<", **runvaspcustodian_kwargs))
         t.append(PassCalcLocs(name=name))
         t.append(
             VaspToDb(db_file=db_file, **vasptodb_kwargs))
