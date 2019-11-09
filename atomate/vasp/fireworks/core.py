@@ -944,7 +944,7 @@ class ChargeAnalysisFW(Firework):
         t.append(RunDDEC(structure_key = "bader_structure"))
         t.append(
             VaspToDb(db_file=db_file, additional_fields={"task_label": name}))
-        super(OptimizeFW, self).__init__(t, parents=parents, name="{}-{}".
+        super(ChargeAnalysisFW, self).__init__(t, parents=parents, name="{}-{}".
                                          format(
             structure.composition.reduced_formula, name),
                                          **kwargs)
