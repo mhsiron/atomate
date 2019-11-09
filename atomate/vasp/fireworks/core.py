@@ -29,6 +29,7 @@ from atomate.vasp.firetasks.write_inputs import WriteNormalmodeDisplacedPoscar, 
     WriteVaspFromIOSetFromInterpolatedPOSCAR
 from atomate.vasp.firetasks.neb_tasks import WriteNEBFromImages, \
     WriteNEBFromEndpoints
+from atomate.vasp.firetasks.run_calc import RunBader, RunDDEC
 
 
 class OptimizeFW(Firework):
@@ -913,3 +914,37 @@ class NEBFW(Firework):
                  PassCalcLocs(name=label)]
 
         super(NEBFW, self).__init__(tasks, spec=spec, name=label, **kwargs)
+
+class ChargeAnalysisFW(Firework):
+    def __init__(self, structure, name=None, vasp_input_set=None,
+                 vasp_cmd = ">>vasp_cmd", db_file=">>db_file<<",
+                 override_default_vasp_params=None,
+                 job_type="double_relaxation_run", ediffg=None,
+                 max_force_threshold=RELAX_MAX_FORCE,
+                 auto_npar=">>auto_npar<<",
+                 half_kpts_first_relax=HALF_KPOINTS_FIRST_RELAX, parents=None,
+                 **kwargs):
+
+        override_default_vasp_params = override_default_vasp_params or {}
+        vasp_input_set = vasp_input_set or \
+                         MPRelaxSet(structure, **override_default_vasp_params)
+
+        name = name or " Charge Analysis FW"
+
+        t = []
+        t.append(WriteVaspFromIOSet(structure=structure,
+                                    vasp_input_set=vasp_input_set))
+        t.append(RunVaspCustodian(vasp_cmd=vasp_cmd, job_type=job_type,
+                                  max_force_threshold=max_force_threshold,
+                                  ediffg=ediffg,
+                                  auto_npar=auto_npar,
+                                  half_kpts_first_relax=half_kpts_first_relax))
+        t.append(PassCalcLocs(name=name))
+        t.append(RunBader(structure = structure))
+        t.append(RunDDEC(structure_key = "bader_structure"))
+        t.append(
+            VaspToDb(db_file=db_file, additional_fields={"task_label": name}))
+        super(OptimizeFW, self).__init__(t, parents=parents, name="{}-{}".
+                                         format(
+            structure.composition.reduced_formula, name),
+                                         **kwargs)

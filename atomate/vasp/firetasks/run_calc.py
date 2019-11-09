@@ -20,6 +20,8 @@ import subprocess
 from pymatgen.io.vasp import Incar, Kpoints, Poscar, Potcar
 from pymatgen.io.vasp.sets import get_vasprun_outcar
 from pymatgen.electronic_structure.boltztrap import BoltztrapRunner
+from pymatgen.command_line.ddec6_caller import DDEC6Analysis
+from pymatgen.command_line.bader_caller import BaderAnalysis
 
 from custodian import Custodian
 from custodian.vasp.handlers import VaspErrorHandler, AliasingErrorHandler, \
@@ -33,6 +35,9 @@ from fireworks import explicit_serialize, FiretaskBase, FWAction
 
 from atomate.utils.utils import env_chk, get_logger
 from atomate.vasp.config import CUSTODIAN_MAX_ERRORS
+from atomate.common.firetasks.glue_tasks import get_calc_loc
+from atomate.vasp.drones import VaspDrone
+from pymatgen.analysis.structure_matcher import StructureMatcher
 
 __author__ = 'Anubhav Jain <ajain@lbl.gov>'
 __credits__ = 'Shyue Ping Ong <ong.sp>'
@@ -333,3 +338,104 @@ class RunVaspFake(FiretaskBase):
             if os.path.isfile(full_file_name):
                 shutil.copy(full_file_name, os.getcwd())
         logger.info("RunVaspFake: ran fake VASP, generated outputs")
+
+class RunBader(FiretaskBase):
+    required_params = []
+    optional_params = ["structure_key","structure","calc_loc", "calc_dir","parse_atomic_densities"]
+
+    def run_task(self,fw_spec):
+        # Get Structure and other params
+        structure_key = self.get("structure_key") or False
+        if structure_key:
+            structure = fw_spec.get(structure_key)
+        else:
+            structure = self.get("structure")
+        parse_atomic_densities = self.get("parse_atomic_densities") or False
+
+        # Get Directory:
+        calc_dir = os.getcwd()
+        if "calc_dir" in self:
+            calc_dir = self["calc_dir"]
+        elif self.get("calc_loc"):
+            calc_dir = get_calc_loc(self["calc_loc"], fw_spec["calc_locs"])[
+                "path"]
+
+        vd = VaspDrone()
+
+        # Bader Files Processing
+        chgcar_file = vd.filter_files(
+            calc_dir, file_pattern="CHGCAR")['standard']
+        potcar_file = vd.filter_files(
+            calc_dir, file_pattern="POTCAR")["standard"]
+
+        # Bader Analysis
+        ba = BaderAnalysis(chgcar_file, potcar_file,
+                           parse_atomic_densities=parse_atomic_densities)
+
+        sm = StructureMatcher()
+        sm.fit(structure, ba.chgcar.structure)
+
+        # Update Structure with Bader Charges, and Charge Transfer
+        for site_index_orig, site_index_chgcar in enumerate(
+                sm.get_mapping(structure, ba.chgcar.structure)):
+                charge = ba.get_charge(site_index_chgcar)
+                transfer = ba.get_charge_transfer(site_index_chgcar)
+                structure.sites[site_index_orig].properties.update(
+                    {"bader_charge":charge,
+                     "bader_charge_transfer":transfer})
+
+        return FWAction(stored_data={"bader_structure":structure})
+
+class RunDDEC(FiretaskBase):
+
+    required_params = []
+    optional_params = ["structure_key","structure_","calc_loc", "calc_dir"]
+    def run_task(self, fw_spec):
+        # Get Structure and other params
+        structure_key = self.get("structure_key") or False
+        if structure_key:
+            structure = fw_spec.get(structure_key)
+        else:
+            structure = self.get("structure")
+
+        # Get Directory:
+        calc_dir = os.getcwd()
+        if "calc_dir" in self:
+            calc_dir = self["calc_dir"]
+        elif self.get("calc_loc"):
+            calc_dir = get_calc_loc(self["calc_loc"], fw_spec["calc_locs"])[
+                "path"]
+
+        vd = VaspDrone()
+
+        # Get Files
+        potcar_file = vd.filter_files(
+            calc_dir,
+            file_pattern="POTCAR")["standard"]
+        aeccar_files = [vd.filter_files(
+            calc_dir,
+            file_pattern="AECCAR{}".format(n))['standard']
+                        for n in range(0, 3)]
+
+        # Check if files zipped
+        gzipped = potcar_file[-3:] == ".gz"
+
+        # Execute
+        ddec = DDEC6Analysis(
+            calc_dir, potcar_file, aeccar_files, gzipped=gzipped)
+
+        # Update Structure with Bader Charges, and Charge Transfer
+        sm = StructureMatcher()
+        sm.fit(structure, ddec.chgcar.structure)
+
+        for site_index_orig, site_index_chgcar in enumerate(
+                sm.get_mapping(structure, ddec.chgcar.structure)):
+            charge = ddec.get_charge(site_index_chgcar)
+            transfer = ddec.get_charge_transfer(index = site_index_chgcar)
+            structure.sites[site_index_orig].properties.update(
+                {"ddec_charge": charge,
+                 "ddec_charge_transfer": transfer})
+
+        return FWAction(stored_data={"ddec_structure": structure})
+
+
