@@ -23,6 +23,9 @@ from atomate.vasp.workflows.base.thermal_expansion import get_wf_thermal_expansi
 from atomate.vasp.workflows.base.neb import get_wf_neb_from_endpoints, get_wf_neb_from_structure, \
     get_wf_neb_from_images
 
+from atomate.vasp.fireworks.core import ChargeAnalysisFW
+from fireworks import Workflow
+
 __author__ = 'Anubhav Jain, Kiran Mathew'
 __email__ = 'ajain@lbl.gov, kmathew@lbl.gov'
 
@@ -655,4 +658,10 @@ def wf_nudged_elastic_band(structures, parent, c=None):
         wf = get_wf_neb_from_images(parent=parent, images=structures,
                                     additional_spec=spec, **kwargs)
 
+    return wf
+
+def get_wf_charge_analysis(structure):
+    fw = ChargeAnalysisFW(structure)
+    wf = Workflow([fw],
+                  name="{}-Charge Analysis".format(structure.composition))
     return wf
