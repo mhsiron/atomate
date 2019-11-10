@@ -22,14 +22,14 @@ from atomate.common.firetasks.glue_tasks import PassCalcLocs
 from atomate.vasp.firetasks.glue_tasks import CopyVaspOutputs, pass_vasp_result
 from atomate.vasp.firetasks.neb_tasks import TransferNEBTask
 from atomate.vasp.firetasks.parse_outputs import VaspToDb, BoltztrapToDb
-from atomate.vasp.firetasks.run_calc import RunVaspCustodian, RunBoltztrap
+from atomate.vasp.firetasks.run_calc import RunVaspCustodian, RunBoltztrap, \
+    RunDDEC, RunBader
 from atomate.vasp.firetasks.write_inputs import WriteNormalmodeDisplacedPoscar, \
     WriteTransmutedStructureIOSet, WriteVaspFromIOSet, WriteVaspHSEBSFromPrev, \
     WriteVaspNSCFFromPrev, WriteVaspSOCFromPrev, WriteVaspStaticFromPrev, \
     WriteVaspFromIOSetFromInterpolatedPOSCAR
 from atomate.vasp.firetasks.neb_tasks import WriteNEBFromImages, \
     WriteNEBFromEndpoints
-from atomate.vasp.firetasks.run_calc import RunBader, RunDDEC
 
 
 class OptimizeFW(Firework):
@@ -944,7 +944,6 @@ class ChargeAnalysisFW(Firework):
         t.append(RunDDEC(structure_key = "bader_structure"))
         t.append(
             VaspToDb(db_file=db_file, additional_fields={"task_label": name}))
-        super(ChargeAnalysisFW, self).__init__(t, parents=parents, name="{}-{}".
-                                         format(
-            structure.composition.reduced_formula, name),
-                                         **kwargs)
+        super(ChargeAnalysisFW, self).__init__(
+            t, parents=parents, name="{}-{}".format(
+                structure.composition.reduced_formula, name),**kwargs)
