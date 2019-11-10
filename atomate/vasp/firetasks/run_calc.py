@@ -339,6 +339,7 @@ class RunVaspFake(FiretaskBase):
                 shutil.copy(full_file_name, os.getcwd())
         logger.info("RunVaspFake: ran fake VASP, generated outputs")
 
+
 @explicit_serialize
 class RunBader(FiretaskBase):
     """
@@ -346,6 +347,7 @@ class RunBader(FiretaskBase):
     """
     required_params = []
     optional_params = ["structure_key","structure","calc_loc", "calc_dir","parse_atomic_densities"]
+
     def run_task(self,fw_spec):
         # Get Structure and other params
         structure_key = self.get("structure_key") or False
@@ -389,6 +391,7 @@ class RunBader(FiretaskBase):
 
         return FWAction(stored_data={"bader_structure":structure})
 
+
 @explicit_serialize
 class RunDDEC(FiretaskBase):
     """
@@ -396,6 +399,7 @@ class RunDDEC(FiretaskBase):
     """
     required_params = []
     optional_params = ["structure_key","structure_","calc_loc", "calc_dir"]
+
     def run_task(self, fw_spec):
         # Get Structure and other params
         structure_key = self.get("structure_key") or False

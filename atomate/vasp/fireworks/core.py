@@ -917,7 +917,7 @@ class NEBFW(Firework):
 
 class ChargeAnalysisFW(Firework):
     def __init__(self, structure, name=None, vasp_input_set=None,
-                 vasp_cmd = ">>vasp_cmd", db_file=">>db_file<<",
+                 vasp_cmd = ">>vasp_cmd<<", db_file=">>db_file<<",
                  override_default_vasp_params=None,
                  job_type="double_relaxation_run", ediffg=None,
                  max_force_threshold=RELAX_MAX_FORCE,
