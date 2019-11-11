@@ -369,9 +369,9 @@ class RunBader(FiretaskBase):
 
         # Bader Files Processing
         chgcar_file = vd.filter_files(
-            calc_dir, file_pattern="CHGCAR")['standard']
+            calc_dir, file_pattern="CHGCAR")['relax2']
         potcar_file = vd.filter_files(
-            calc_dir, file_pattern="POTCAR")["standard"]
+            calc_dir, file_pattern="POTCAR")["relax2"]
 
         # Bader Analysis
         ba = BaderAnalysis(chgcar_file, potcar_file,
@@ -421,10 +421,10 @@ class RunDDEC(FiretaskBase):
         # Get Files
         potcar_file = vd.filter_files(
             calc_dir,
-            file_pattern="POTCAR")["standard"]
+            file_pattern="POTCAR")["relax2"]
         aeccar_files = [vd.filter_files(
             calc_dir,
-            file_pattern="AECCAR{}".format(n))['standard']
+            file_pattern="AECCAR{}".format(n))['relax2']
                         for n in range(0, 3)]
 
         # Check if files zipped

@@ -925,7 +925,9 @@ class ChargeAnalysisFW(Firework):
                  half_kpts_first_relax=HALF_KPOINTS_FIRST_RELAX, parents=None,
                  **kwargs):
 
-        override_default_vasp_params = override_default_vasp_params or {}
+        override_default_vasp_params = override_default_vasp_params or {
+            "user_incar_settings":{"LAECHG":True}
+        }
         vasp_input_set = vasp_input_set or \
                          MPRelaxSet(structure, **override_default_vasp_params)
 
