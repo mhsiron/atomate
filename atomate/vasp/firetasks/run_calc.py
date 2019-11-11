@@ -371,7 +371,7 @@ class RunBader(FiretaskBase):
         chgcar_file = vd.filter_files(
             calc_dir, file_pattern="CHGCAR")['relax2']
         potcar_file = vd.filter_files(
-            calc_dir, file_pattern="POTCAR")["relax2"]
+            calc_dir, file_pattern="POTCAR")["standard"]
 
         # Bader Analysis
         ba = BaderAnalysis(chgcar_file, potcar_file,
