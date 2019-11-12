@@ -377,7 +377,7 @@ class RunBader(FiretaskBase):
         ba = BaderAnalysis(chgcar_file, potcar_file,
                            parse_atomic_densities=parse_atomic_densities)
 
-        sm = StructureMatcher()
+        sm = StructureMatcher(primitive_cell=False)
         sm.fit(structure, ba.chgcar.structure)
 
         # Update Structure with Bader Charges, and Charge Transfer
@@ -435,7 +435,7 @@ class RunDDEC(FiretaskBase):
             calc_dir, potcar_file, aeccar_files, gzipped=gzipped)
 
         # Update Structure with Bader Charges, and Charge Transfer
-        sm = StructureMatcher()
+        sm = StructureMatcher(primitive_cell=False)
         sm.fit(structure, ddec.chgcar.structure)
 
         for site_index_orig, site_index_chgcar in enumerate(
