@@ -440,8 +440,7 @@ class RunDDEC(FiretaskBase):
         gzipped = potcar_file[-3:] == ".gz"
 
         # Execute
-        ddec = DDEC6Analysis(
-            calc_dir, chgcar_file, potcar_file, aeccar_files, gzipped=gzipped)
+        ddec = DDEC6Analysis(chgcar_file, potcar_file, aeccar_files, gzipped=gzipped)
 
         # Update Structure with Bader Charges, and Charge Transfer
         sm = StructureMatcher(primitive_cell=False)
