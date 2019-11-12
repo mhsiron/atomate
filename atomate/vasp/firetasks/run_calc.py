@@ -408,7 +408,7 @@ class RunDDEC(FiretaskBase):
     def run_task(self, fw_spec):
         # Get Structure and other params
         db_file = self.get("db_file",">>db_file<<")
-        structure_key = self.get("structure_key") or False
+        structure_key = self.get("structure_key", False)
         if structure_key:
             structure = fw_spec.get(structure_key)
         else:
