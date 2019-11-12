@@ -403,16 +403,19 @@ class RunDDEC(FiretaskBase):
     DDEC Firetask
     """
     required_params = []
-    optional_params = ["db_file","structure_key","structure_","calc_loc", "calc_dir"]
+    optional_params = ["db_file","structure_key","structure_","calc_loc", "calc_dir","ddec6_run"]
 
     def run_task(self, fw_spec):
         # Get Structure and other params
         db_file = self.get("db_file",">>db_file<<")
         structure_key = self.get("structure_key", False)
+        run = self.get("ddec6_run", True)
         if structure_key:
             structure = fw_spec.get(structure_key)
         else:
             structure = self.get("structure")
+
+        structure.to(fmt="json",filename="structure.json")
 
         # Get Directory:
         calc_dir = os.getcwd()
@@ -440,7 +443,7 @@ class RunDDEC(FiretaskBase):
         gzipped = potcar_file[-3:] == ".gz"
 
         # Execute
-        ddec = DDEC6Analysis(chgcar_file, potcar_file, aeccar_files, gzipped=gzipped)
+        ddec = DDEC6Analysis(chgcar_file, potcar_file, aeccar_files, gzipped=gzipped, run=run)
 
         # Update Structure with Bader Charges, and Charge Transfer
         sm = StructureMatcher(primitive_cell=False)
