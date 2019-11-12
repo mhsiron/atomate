@@ -38,6 +38,11 @@ from atomate.vasp.config import CUSTODIAN_MAX_ERRORS
 from atomate.common.firetasks.glue_tasks import get_calc_loc
 from atomate.vasp.drones import VaspDrone
 from pymatgen.analysis.structure_matcher import StructureMatcher
+from atomate.utils.utils import env_chk
+from monty.json import jsanitize
+import json
+from fireworks.utilities.fw_serializers import DATETIME_HANDLER
+from atomate.vasp.database import VaspCalcDb
 
 __author__ = 'Anubhav Jain <ajain@lbl.gov>'
 __credits__ = 'Shyue Ping Ong <ong.sp>'
@@ -398,10 +403,11 @@ class RunDDEC(FiretaskBase):
     DDEC Firetask
     """
     required_params = []
-    optional_params = ["structure_key","structure_","calc_loc", "calc_dir"]
+    optional_params = ["db_file","structure_key","structure_","calc_loc", "calc_dir"]
 
     def run_task(self, fw_spec):
         # Get Structure and other params
+        db_file = self.get("db_file",">>db_file<<")
         structure_key = self.get("structure_key") or False
         if structure_key:
             structure = fw_spec.get(structure_key)
@@ -448,6 +454,25 @@ class RunDDEC(FiretaskBase):
             structure.sites[site_index_orig].properties.update(
                 {"ddec_charge": charge,
                  "ddec_charge_transfer": transfer})
+
+        stored_data = {}
+        stored_data["structure"] = structure
+        stored_data["bader"] = structure.site_properties["bader_charge"]
+        stored_data["ddec"] = structure.site_properties["ddec_charge"]
+
+
+        stored_data = jsanitize(stored_data)
+
+        db_file = env_chk(db_file, fw_spec)
+
+        if not db_file:
+            with open("task.json", "w") as f:
+                f.write(json.dumps(stored_data, default=DATETIME_HANDLER))
+        else:
+            db = VaspCalcDb.from_db_file(db_file, admin=True)
+            db.collection = db.db["charge_analysis"]
+            db.collection.insert_one(stored_data)
+            logger.info("Charge analysis complete.")
 
         return FWAction(stored_data={"ddec_structure": structure})
 
