@@ -394,7 +394,7 @@ class RunBader(FiretaskBase):
                     {"bader_charge":charge,
                      "bader_charge_transfer":transfer})
 
-        return FWAction(stored_data={"bader_structure":structure})
+        return FWAction(mod_spec = {"_push":{"bader_structure":structure}})
 
 
 @explicit_serialize
@@ -473,6 +473,6 @@ class RunDDEC(FiretaskBase):
             db.collection.insert_one(stored_data)
             logger.info("Charge analysis complete.")
 
-        return FWAction(stored_data={"ddec_structure": structure})
+        return FWAction(mod_spec = {"_push":{"ddec_structure":structure}})
 
 
