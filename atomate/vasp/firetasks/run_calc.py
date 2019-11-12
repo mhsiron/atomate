@@ -43,6 +43,7 @@ from monty.json import jsanitize
 import json
 from fireworks.utilities.fw_serializers import DATETIME_HANDLER
 from atomate.vasp.database import VaspCalcDb
+from pymatgen.core import Structure
 
 __author__ = 'Anubhav Jain <ajain@lbl.gov>'
 __credits__ = 'Shyue Ping Ong <ong.sp>'
@@ -411,11 +412,9 @@ class RunDDEC(FiretaskBase):
         structure_key = self.get("structure_key", False)
         run = self.get("ddec6_run", True)
         if structure_key:
-            structure = fw_spec.get(structure_key)
+            structure = Structure.from_dict(fw_spec.get(structure_key))
         else:
-            structure = self.get("structure")
-
-        structure.to(fmt="json",filename="structure.json")
+            structure = Structure.from_dict(self.get("structure"))
 
         # Get Directory:
         calc_dir = os.getcwd()
