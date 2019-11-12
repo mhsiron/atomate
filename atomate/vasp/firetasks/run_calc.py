@@ -422,6 +422,9 @@ class RunDDEC(FiretaskBase):
         potcar_file = vd.filter_files(
             calc_dir,
             file_pattern="POTCAR")["standard"]
+        chgcar_file = vd.filter_files(
+            calc_dir,
+            file_pattern="CHGCAR")["relax2"]
         aeccar_files = [vd.filter_files(
             calc_dir,
             file_pattern="AECCAR{}".format(n))['standard']
@@ -432,7 +435,7 @@ class RunDDEC(FiretaskBase):
 
         # Execute
         ddec = DDEC6Analysis(
-            calc_dir, potcar_file, aeccar_files, gzipped=gzipped)
+            calc_dir, chgcar_file, potcar_file, aeccar_files, gzipped=gzipped)
 
         # Update Structure with Bader Charges, and Charge Transfer
         sm = StructureMatcher(primitive_cell=False)
