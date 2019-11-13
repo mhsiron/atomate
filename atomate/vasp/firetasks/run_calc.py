@@ -404,7 +404,7 @@ class RunDDEC(FiretaskBase):
     DDEC Firetask
     """
     required_params = []
-    optional_params = ["db_file","structure_key","structure_","calc_loc", "calc_dir","ddec6_run"]
+    optional_params = ["db_file","structure_key","structure","calc_loc", "calc_dir","ddec6_run"]
 
     def run_task(self, fw_spec):
         # Get Structure and other params
