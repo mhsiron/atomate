@@ -412,7 +412,10 @@ class RunDDEC(FiretaskBase):
         structure_key = self.get("structure_key", False)
         run = self.get("ddec6_run", True)
         if structure_key:
-            structure = Structure.from_dict(fw_spec.get(structure_key))
+            try:
+                structure = Structure.from_dict(fw_spec.get(structure_key))
+            except:
+                structure = fw_spec.get(structure_key)
         else:
             try:
                 structure = Structure.from_dict(self.get("structure"))
