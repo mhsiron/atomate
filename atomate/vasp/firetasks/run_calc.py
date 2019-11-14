@@ -461,11 +461,16 @@ class RunDDEC(FiretaskBase):
 
         stored_data = {}
 
-        stored_data["bader"] = structure.site_properties["bader_charge"]
-        stored_data["ddec"] = structure.site_properties["ddec_charge"]
-
+        stored_data["charge"] = {"bader":
+                                     structure.site_properties["bader_charge"],
+                                 "ddec":
+                                     structure.site_properties["ddec_charge"]}
+        stored_data["transfer"] = {
+            "bader":structure.site_properties["bader_charge_transfer"],
+            "ddec":structure.site_properties["ddec_charge_transfer"]}
 
         stored_data = jsanitize(stored_data)
+
         stored_data["structure"] = structure
 
         db_file = env_chk(db_file, fw_spec)
