@@ -470,7 +470,6 @@ class RunDDEC(FiretaskBase):
             "ddec":structure.site_properties["ddec_charge_transfer"]}
 
         stored_data = jsanitize(stored_data)
-        jsanitize()
 
         stored_data["structure"] = structure.as_dict()
 
