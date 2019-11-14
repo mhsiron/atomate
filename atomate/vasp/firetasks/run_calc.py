@@ -417,10 +417,7 @@ class RunDDEC(FiretaskBase):
             except:
                 structure = fw_spec.get(structure_key)[0]
         else:
-            try:
-                structure = Structure.from_dict(self.get("structure")[0])
-            except:
-                structure = self.get("structure")[0]
+            structure = self.get("structure")
 
         # Get Directory:
         calc_dir = os.getcwd()
