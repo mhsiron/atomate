@@ -930,6 +930,7 @@ class ChargeAnalysisFW(Firework):
         }
         vasp_input_set = vasp_input_set or \
                          MPRelaxSet(structure, **override_default_vasp_params)
+        ddec_run = kwargs.get("ddec_run", True)
 
         name = name or " Charge Analysis FW"
 
@@ -945,7 +946,8 @@ class ChargeAnalysisFW(Firework):
         t.append(
             VaspToDb(db_file=db_file, additional_fields={"task_label": name}))
         t.append(RunBader(structure=structure))
-        t.append(RunDDEC(db_file=db_file, structure_key="bader_structure"))
+        t.append(RunDDEC(db_file=db_file, structure_key="bader_structure",
+                         ddec6_run=ddec_run))
         super(ChargeAnalysisFW, self).__init__(
             t, parents=parents, name="{}-{}".format(
                 structure.composition.reduced_formula, name),**kwargs)

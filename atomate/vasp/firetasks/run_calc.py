@@ -395,7 +395,7 @@ class RunBader(FiretaskBase):
                     {"bader_charge":charge,
                      "bader_charge_transfer":transfer})
 
-        return FWAction(mod_spec = {"_push":{"bader_structure":structure.as_dict()}})
+        return FWAction(mod_spec = {"_push":{"bader_structure":structure}})
 
 
 @explicit_serialize
