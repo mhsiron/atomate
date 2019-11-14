@@ -923,6 +923,7 @@ class ChargeAnalysisFW(Firework):
                  max_force_threshold=RELAX_MAX_FORCE,
                  auto_npar=">>auto_npar<<",
                  half_kpts_first_relax=HALF_KPOINTS_FIRST_RELAX, parents=None,
+                 ddec_run = True,
                  **kwargs):
 
         override_default_vasp_params = override_default_vasp_params or {
@@ -930,7 +931,6 @@ class ChargeAnalysisFW(Firework):
         }
         vasp_input_set = vasp_input_set or \
                          MPRelaxSet(structure, **override_default_vasp_params)
-        ddec_run = kwargs.get("ddec_run", True)
 
         name = name or " Charge Analysis FW"
 
