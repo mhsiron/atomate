@@ -44,6 +44,7 @@ import json
 from fireworks.utilities.fw_serializers import DATETIME_HANDLER
 from atomate.vasp.database import VaspCalcDb
 from pymatgen.core import Structure
+from pymatgen.analysis.structure_matcher import ElementComparator
 
 __author__ = 'Anubhav Jain <ajain@lbl.gov>'
 __credits__ = 'Shyue Ping Ong <ong.sp>'
@@ -358,7 +359,7 @@ class RunBader(FiretaskBase):
         # Get Structure and other params
         structure_key = self.get("structure_key") or False
         if structure_key:
-            structure = fw_spec.get(structure_key)
+            structure = fw_spec.get(structure_key)[0]
         else:
             structure = self.get("structure")
         parse_atomic_densities = self.get("parse_atomic_densities") or False
@@ -383,7 +384,7 @@ class RunBader(FiretaskBase):
         ba = BaderAnalysis(chgcar_file, potcar_file,
                            parse_atomic_densities=parse_atomic_densities)
 
-        sm = StructureMatcher(primitive_cell=False)
+        sm = StructureMatcher(primitive_cell=False,comparator=ElementComparator())
         sm.fit(structure, ba.chgcar.structure)
 
         # Update Structure with Bader Charges, and Charge Transfer
