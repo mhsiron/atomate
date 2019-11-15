@@ -384,8 +384,8 @@ class RunBader(FiretaskBase):
         ba = BaderAnalysis(chgcar_file, potcar_file,
                            parse_atomic_densities=parse_atomic_densities)
 
-        sm = StructureMatcher(primitive_cell=False,comparator=ElementComparator())
-        sm.fit(structure, ba.chgcar.structure)
+        sm = StructureMatcher(primitive_cell=False,
+                              comparator=ElementComparator())
 
         # Update Structure with Bader Charges, and Charge Transfer
         for site_index_orig, site_index_chgcar in enumerate(
@@ -449,8 +449,8 @@ class RunDDEC(FiretaskBase):
         ddec = DDEC6Analysis(chgcar_file, potcar_file, aeccar_files, gzipped=gzipped, run=run)
 
         # Update Structure with Bader Charges, and Charge Transfer
-        sm = StructureMatcher(primitive_cell=False)
-        sm.fit(structure, ddec.chgcar.structure)
+        sm = StructureMatcher(primitive_cell=False,
+                              comparator=ElementComparator())
 
         for site_index_orig, site_index_chgcar in enumerate(
                 sm.get_mapping(structure, ddec.chgcar.structure)):
