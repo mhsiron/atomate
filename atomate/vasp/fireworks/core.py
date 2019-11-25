@@ -41,6 +41,7 @@ class OptimizeFW(Firework):
                  max_force_threshold=RELAX_MAX_FORCE,
                  auto_npar=">>auto_npar<<",
                  half_kpts_first_relax=HALF_KPOINTS_FIRST_RELAX, parents=None,
+                 run_vasp_kwargs = None, vasp_to_db_kwargs= None,
                  **kwargs):
         """
         Optimize the given structure.
@@ -67,6 +68,8 @@ class OptimizeFW(Firework):
         vasp_input_set = vasp_input_set or MPRelaxSet(structure,
                                                       force_gamma=force_gamma,
                                                       **override_default_vasp_params)
+        run_vasp_kwargs = run_vasp_kwargs or {}
+        vasp_to_db_kwargs = vasp_to_db_kwargs or {}
 
         t = []
         t.append(WriteVaspFromIOSet(structure=structure,
@@ -75,10 +78,12 @@ class OptimizeFW(Firework):
                                   max_force_threshold=max_force_threshold,
                                   ediffg=ediffg,
                                   auto_npar=auto_npar,
-                                  half_kpts_first_relax=half_kpts_first_relax))
+                                  half_kpts_first_relax=half_kpts_first_relax,
+                                  **run_vasp_kwargs))
         t.append(PassCalcLocs(name=name))
         t.append(
-            VaspToDb(db_file=db_file, additional_fields={"task_label": name}))
+            VaspToDb(db_file=db_file, additional_fields={"task_label": name},
+                     **vasp_to_db_kwargs))
         super(OptimizeFW, self).__init__(t, parents=parents, name="{}-{}".
                                          format(
                                              structure.composition.reduced_formula, name),
