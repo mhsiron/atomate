@@ -7,7 +7,6 @@ from fireworks import FiretaskBase, FWAction, explicit_serialize, Workflow
 import numpy as np
 from skopt import gp_minimize, gbrt_minimize, forest_minimize
 from custodian.vasp.handlers import WalltimeHandler
-from atomate.vasp.firetasks.global_optimum_task import CalculateLoss
 
 from pymatgen import Structure
 from pymatgen.io.vasp.sets import MPRelaxSet
