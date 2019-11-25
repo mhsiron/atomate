@@ -31,6 +31,8 @@ class CalculateLoss(FiretaskBase):
                                                  {current_incar_params:loss}
                                          }})
 
+
+@explicit_serialize
 class AnalyzeLossAndDecideNextStep(FiretaskBase):
     optional_params = ["structure","incar_grid","minimizer","previous_results",
                        "max_fw","pmg_set","pmg_set_kwargs",
