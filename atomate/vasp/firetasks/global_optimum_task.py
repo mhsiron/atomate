@@ -6,7 +6,6 @@ from fireworks import FiretaskBase, FWAction, explicit_serialize, Workflow
 
 import numpy as np
 from skopt import gp_minimize, gbrt_minimize, forest_minimize
-from atomate.vasp.fireworks.core import OptimizeFW
 from custodian.vasp.handlers import WalltimeHandler
 from atomate.vasp.firetasks.global_optimum_task import CalculateLoss
 
@@ -147,6 +146,7 @@ def load_and_launch(structure, incar_grid, minimizer,
                 # appropriate MP Set
                 set = MPRelaxSet(structure, **pmg_set_kwargs) or \
                       pmg_set(structure, **pmg_set_kwargs)
+                from atomate.vasp.fireworks.core import OptimizeFW
                 fws.append(OptimizeFW(structure,
                                       vasp_input_set=set,
                                       vasp_cmd=">>vasp_cmd<<",
