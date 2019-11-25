@@ -6,7 +6,7 @@ from fireworks import FiretaskBase, FWAction, explicit_serialize, Workflow
 
 import numpy as np
 from skopt import gp_minimize, gbrt_minimize, forest_minimize
-from atomate.vasp.fireworks import OptimizeFW
+from atomate.vasp.fireworks.core import OptimizeFW
 from custodian.vasp.handlers import WalltimeHandler
 from atomate.vasp.firetasks.global_optimum_task import CalculateLoss
 
