@@ -16,7 +16,7 @@ from fireworks import Firework
 
 from pymatgen import Structure
 from pymatgen.io.vasp.sets import MPRelaxSet, MITMDSet, MITRelaxSet, \
-    MPStaticSet, MPSOCSet, LinearResponseUSet
+    MPStaticSet, MPSOCSet
 
 from atomate.common.firetasks.glue_tasks import PassCalcLocs
 from atomate.vasp.firetasks.glue_tasks import CopyVaspOutputs, pass_vasp_result
