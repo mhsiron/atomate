@@ -115,6 +115,7 @@ def load_and_launch(structure, incar_grid, minimizer,
     pmg_set_kwargs = pmg_set_kwargs or None
     wall_time = int(60 * 60 * 1)  # 1 hour
     opt_kwargs = opt_kwargs or {}
+    pmg_set_kwargs = pmg_set_kwargs or {}
 
     p_t = []  # INCAR params to try out, reformatted for skopt library
     for key, item in incar_grid.items():
