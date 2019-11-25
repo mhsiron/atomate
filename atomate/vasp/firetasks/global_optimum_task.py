@@ -61,11 +61,12 @@ class AnalyzeLossAndDecideNextStep(FiretaskBase):
 
         if parents is not None:
             previous_results = fw_spec.get("results")
-        wf = load_and_launch(structure,incar_grid,minimizer,
-                              previous_results=previous_results,
-                              max_fw=max_fw, pmg_set=pmg_set,
-                              pmg_set_kwargs=pmg_set_kwargs,
-                              opt_kwargs=opt_kwargs)
+        wf = load_and_launch(structure=structure,
+                             incar_grid=incar_grid,minimizer=minimizer,
+                             previous_results=previous_results,
+                             max_fw=max_fw, pmg_set=pmg_set,
+                             pmg_set_kwargs=pmg_set_kwargs,
+                             opt_kwargs=opt_kwargs)
         return FWAction(additions=wf)
 
 

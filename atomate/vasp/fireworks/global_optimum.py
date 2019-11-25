@@ -24,8 +24,9 @@ class GlobalOptimumFW(Firework):
                  name ="Global Optimum", opt_kwargs=None, parents = None,
                  **kwargs):
         t = []
-        t.append(AnalyzeLossAndDecideNextStep(structure, incar_grid,
-                                              minimizer,
+        t.append(AnalyzeLossAndDecideNextStep(structure=structure,
+                                              incar_grid=incar_grid,
+                                              minimizer=minimizer,
                                               previous_results=previous_results,
                                               max_fw=max_fw,
                                               pmg_set=pmg_set,
