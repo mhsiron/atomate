@@ -10,7 +10,6 @@ from custodian.vasp.handlers import WalltimeHandler
 
 from pymatgen import Structure
 from pymatgen.io.vasp.sets import MPRelaxSet
-from atomate.vasp.fireworks.global_optimum import GlobalOptimumFW
 
 
 from pymatgen.io.vasp.outputs import Oszicar
@@ -164,6 +163,8 @@ def load_and_launch(structure, incar_grid, minimizer,
                 loss_task = CalculateLoss(current_incar_params=params)
                 fws[-1].tasks.append(loss_task)
 
+                from atomate.vasp.fireworks.global_optimum import \
+                    GlobalOptimumFW
                 # Add Fireworks to pass analyze data, and rerun function
                 fws.append(GlobalOptimumFW(structure,incar_grid,minimizer,
                                            max_fw=max_fw,pmg_set=pmg_set,
