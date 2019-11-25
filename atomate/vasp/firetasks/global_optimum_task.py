@@ -16,7 +16,8 @@ from pymatgen.io.vasp.outputs import Oszicar
 
 @explicit_serialize
 class CalculateLoss(FiretaskBase):
-    optional_params = ["current_incar_params"]
+    required_params = ["current_incar_params"]
+
     def run_task(self, fw_spec):
         current_incar_params = self.get("current_incar_params")
         loss = loss_function()
@@ -31,9 +32,10 @@ class CalculateLoss(FiretaskBase):
 
 @explicit_serialize
 class AnalyzeLossAndDecideNextStep(FiretaskBase):
-    optional_params = ["structure","incar_grid","minimizer","previous_results",
+    required_params = ["structure","incar_grid","minimizer","previous_results",
                        "max_fw","pmg_set","pmg_set_kwargs",
                        "opt_kwargs","parents"]
+
     def run_task(self, fw_spec):
         structure = self.get("structure")
         incar_grid = self.get("incar_grid")
