@@ -15,7 +15,7 @@ sequences of VASP calculations.
 
 from fireworks import Firework
 
-from atomate.vasp.firetasks.global_optimum_task import AnalyzeLossAndDecideNextStep
+
 
 
 class GlobalOptimumFW(Firework):
@@ -23,8 +23,10 @@ class GlobalOptimumFW(Firework):
                  max_fw=10, pmg_set=None, pmg_set_kwargs=None,
                  name ="Global Optimum", opt_kwargs=None, parents = None,
                  **kwargs):
+        import atomate.vasp.firetasks.global_optimum_task as at
+
         t = []
-        t.append(AnalyzeLossAndDecideNextStep(structure=structure,
+        t.append(at.AnalyzeLossAndDecideNextStep(structure=structure,
                                               incar_grid=incar_grid,
                                               minimizer=minimizer,
                                               previous_results=previous_results,

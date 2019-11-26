@@ -1,18 +1,22 @@
+# coding: utf-8
+
 from __future__ import division, print_function, unicode_literals, absolute_import
 
-import numpy as np
 
 from fireworks import FiretaskBase, FWAction, explicit_serialize, Workflow
 
 import numpy as np
 from skopt import gp_minimize, gbrt_minimize, forest_minimize
 from custodian.vasp.handlers import WalltimeHandler
+from atomate.vasp.fireworks.global_optimum import GlobalOptimumFW
 
-from pymatgen import Structure
 from pymatgen.io.vasp.sets import MPRelaxSet
+from atomate.vasp.fireworks import OptimizeFW
 
 
 from pymatgen.io.vasp.outputs import Oszicar
+
+from copy import deepcopy
 
 @explicit_serialize
 class CalculateLoss(FiretaskBase):
@@ -61,12 +65,13 @@ class AnalyzeLossAndDecideNextStep(FiretaskBase):
 
         if parents is not None:
             previous_results = fw_spec.get("results")
-        wf = load_and_launch(structure=structure,
+        fws = load_and_launch(structure=structure,
                              incar_grid=incar_grid,minimizer=minimizer,
                              previous_results=previous_results,
                              max_fw=max_fw, pmg_set=pmg_set,
                              pmg_set_kwargs=pmg_set_kwargs,
                              opt_kwargs=opt_kwargs)
+        wf = Workflow(fws)
         return FWAction(additions=wf)
 
 
@@ -154,8 +159,8 @@ def load_and_launch(structure, incar_grid, minimizer,
                 # appropriate MP Set
                 set = MPRelaxSet(structure, **pmg_set_kwargs) or \
                       pmg_set(structure, **pmg_set_kwargs)
-                from atomate.vasp.fireworks.core import OptimizeFW
-                fws.append(OptimizeFW(structure,
+
+                fws.append(deepcopy(OptimizeFW(structure,
                                       vasp_input_set=set,
                                       vasp_cmd=">>vasp_cmd<<",
                                       db_file=">>db_file<<",
@@ -167,29 +172,27 @@ def load_and_launch(structure, incar_grid, minimizer,
                                       },
                                       vasp_to_db_kwargs={
                                           "defuse_unsuccessful": False
-                                      }, **opt_kwargs))
+                                      }, **opt_kwargs)))
 
                 # Append FireTask to pass proper data from OSZICAR:
-                loss_task = CalculateLoss(current_incar_params=params)
+                loss_task = deepcopy(CalculateLoss(current_incar_params=params))
                 fws[-1].tasks.append(loss_task)
 
-                from atomate.vasp.fireworks.global_optimum import \
-                    GlobalOptimumFW
                 # Add Fireworks to pass analyze data, and rerun function
-                fws.append(GlobalOptimumFW(structure,incar_grid,minimizer,
+                fws.append(deepcopy(GlobalOptimumFW(structure,incar_grid,minimizer,
                                            max_fw=max_fw,pmg_set=pmg_set,
                                            pmg_set_kwargs=pmg_set_kwargs,
                                            opt_kwargs=opt_kwargs,
-                                           parents = fws))
+                                           parents = fws)))
 
                 # For now return a random value
-                return 0
+                return 5
             else:
                 # We've already added this FW to run. For now we will
                 # return a random value.
-                return 0
+                return 5
             l_params.append(params)
 
-    wf = Workflow(fws)
     minimizer(func, p_t, n_calls=n_calls)
-    return wf
+    print("minimizer ran and stop")
+    return fws
