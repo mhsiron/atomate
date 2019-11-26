@@ -176,17 +176,9 @@ def load_and_launch(structure, incar_grid, minimizer,
                                       vasp_to_db_kwargs={
                                           "defuse_unsuccessful": False
                                       }, **opt_kwargs)))
-
                 # Append FireTask to pass proper data from OSZICAR:
                 loss_task = deepcopy(CalculateLoss(current_incar_params=params))
                 fws[-1].tasks.append(loss_task)
-
-                # Add Fireworks to pass analyze data, and rerun function
-                fws.append(deepcopy(GlobalOptimumFW(structure,incar_grid,minimizer,
-                                           max_fw=max_fw,pmg_set=pmg_set,
-                                           pmg_set_kwargs=pmg_set_kwargs,
-                                           opt_kwargs=opt_kwargs,
-                                           parents = fws)))
 
                 # For now return a random value
                 return 5
@@ -196,5 +188,11 @@ def load_and_launch(structure, incar_grid, minimizer,
                 return 5
 
     minimizer(func, p_t, n_calls=n_calls)
+    # Add Fireworks to pass analyze data, and rerun function
+    fws.append(deepcopy(GlobalOptimumFW(structure, incar_grid, minimizer,
+                                        max_fw=max_fw, pmg_set=pmg_set,
+                                        pmg_set_kwargs=pmg_set_kwargs,
+                                        opt_kwargs=opt_kwargs,
+                                        parents=fws)))
     print("minimizer ran and stop")
     return fws
