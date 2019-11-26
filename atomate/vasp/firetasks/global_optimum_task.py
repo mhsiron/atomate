@@ -181,7 +181,7 @@ def load_and_launch(structure, incar_grid, minimizer,
                                            pmg_set_kwargs=pmg_set_kwargs,
                                            opt_kwargs=opt_kwargs,
                                            parents = fws))
-                wf = Workflow(fws)
+
                 # For now return a random value
                 return 0
             else:
@@ -190,5 +190,6 @@ def load_and_launch(structure, incar_grid, minimizer,
                 return 0
             l_params.append(params)
 
+    wf = Workflow(fws)
     minimizer(func, p_t, n_calls=n_calls)
     return wf
