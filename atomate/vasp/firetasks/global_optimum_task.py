@@ -147,6 +147,7 @@ def load_and_launch(structure, incar_grid, minimizer,
             return previous_results[params]
         else:
             if params not in l_params:
+                l_params.append(params)
                 # This is where can launch the FW, with the incar
                 # params supplied.
 
@@ -157,8 +158,10 @@ def load_and_launch(structure, incar_grid, minimizer,
 
                 # Create FW:
                 # appropriate MP Set
-                set = MPRelaxSet(structure, **pmg_set_kwargs) or \
-                      pmg_set(structure, **pmg_set_kwargs)
+                set = MPRelaxSet(structure, user_incar_settings=incar_update,
+                                 **pmg_set_kwargs) or \
+                      pmg_set(structure, user_incar_settings=incar_update,
+                              **pmg_set_kwargs)
 
                 fws.append(deepcopy(OptimizeFW(structure,
                                       vasp_input_set=set,
@@ -191,7 +194,6 @@ def load_and_launch(structure, incar_grid, minimizer,
                 # We've already added this FW to run. For now we will
                 # return a random value.
                 return 5
-            l_params.append(params)
 
     minimizer(func, p_t, n_calls=n_calls)
     print("minimizer ran and stop")
