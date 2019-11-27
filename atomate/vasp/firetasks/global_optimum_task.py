@@ -163,7 +163,7 @@ def load_and_launch(structure, incar_grid, minimizer,
                       pmg_set(structure, user_incar_settings=incar_update,
                               **pmg_set_kwargs)
 
-                fws.append(deepcopy(OptimizeFW(structure,
+                fws.append(OptimizeFW(structure,
                                       vasp_input_set=set,
                                       vasp_cmd=">>vasp_cmd<<",
                                       db_file=">>db_file<<",
@@ -175,7 +175,7 @@ def load_and_launch(structure, incar_grid, minimizer,
                                       },
                                       vasp_to_db_kwargs={
                                           "defuse_unsuccessful": False
-                                      }, **opt_kwargs)))
+                                      }, **opt_kwargs))
                 # Append FireTask to pass proper data from OSZICAR:
                 loss_task = deepcopy(CalculateLoss(current_incar_params=params))
                 fws[-1].tasks.append(loss_task)
@@ -189,10 +189,11 @@ def load_and_launch(structure, incar_grid, minimizer,
 
     minimizer(func, p_t, n_calls=n_calls)
     # Add Fireworks to pass analyze data, and rerun function
-    fws.append(deepcopy(GlobalOptimumFW(structure, incar_grid, minimizer,
-                                        max_fw=max_fw, pmg_set=pmg_set,
-                                        pmg_set_kwargs=pmg_set_kwargs,
-                                        opt_kwargs=opt_kwargs,
-                                        parents=fws)))
+    fws.append(GlobalOptimumFW(structure, incar_grid, minimizer,
+                               max_fw=max_fw, pmg_set=pmg_set,
+                               pmg_set_kwargs=pmg_set_kwargs,
+                               opt_kwargs=opt_kwargs,
+                               parents=fws,
+                               spec={"_allow_fizzled_parents": True}))
     print("minimizer ran and stop")
     return fws
