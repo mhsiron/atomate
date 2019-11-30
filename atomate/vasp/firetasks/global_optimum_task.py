@@ -76,12 +76,14 @@ class AnalyzeLossAndDecideNextStep(FiretaskBase):
 
         if parents is not None:
             previous_results = fw_spec.get("results")
-        wf = load_and_launch(structure=structure,
+        fws, links = load_and_launch(structure=structure,
                              incar_grid=incar_grid,minimizer=minimizer,
                              previous_results=previous_results,
                              max_fw=max_fw, pmg_set=pmg_set,
                              pmg_set_kwargs=pmg_set_kwargs,
                              opt_kwargs=opt_kwargs)
+
+        wf = Workflow(fws, links_dict=links)
         return FWAction(additions=wf)
 
 
@@ -147,6 +149,7 @@ def load_and_launch(structure, incar_grid, minimizer,
     l_params = []  # This is the dictionary of params we have
     # attempted for these calculations so far.
     fws = []
+    links = []
 
     def func(params):
         print(params)
@@ -190,6 +193,8 @@ def load_and_launch(structure, incar_grid, minimizer,
                 loss_task = deepcopy(CalculateLoss(current_incar_params=params))
                 fws[-1].tasks.append(loss_task)
 
+                links.append(fws[-1].fw_id)
+
                 # For now return a random value
                 return 5
             else:
@@ -207,6 +212,4 @@ def load_and_launch(structure, incar_grid, minimizer,
                                spec={"_allow_fizzled_parents": True}))
     print("minimizer ran and stop")
 
-    wf = Workflow(fws, links_dict={fws[-1].fw_id:[fw.fw_id for fw in fws[:-1]]})
-
-    return wf
+    return fws, {fws[-1].fw_id:links}
