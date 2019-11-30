@@ -44,7 +44,7 @@ class CalculateLoss(FiretaskBase):
         return FWAction(update_spec={"_push":
                                          {
                                              "results":
-                                                 {current_incar_params:loss}
+                                                 {tuple(current_incar_params):loss}
                                          }})
 
 
@@ -151,7 +151,7 @@ def load_and_launch(structure, incar_grid, minimizer,
 
     def func(params):
         print(params)
-        if params in list(previous_results.keys()):
+        if tuple(params) in list(previous_results.keys()):
             # If we have already successfully run this calculation,
             # and we have supplied it,
             # we simply return the results of this calculation
