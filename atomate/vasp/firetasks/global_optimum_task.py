@@ -18,6 +18,10 @@ from pymatgen.io.vasp.outputs import Oszicar
 
 from copy import deepcopy
 
+from atomate.utils.utils import get_logger
+
+logger = get_logger(__name__)
+
 @explicit_serialize
 class CalculateLoss(FiretaskBase):
     """
@@ -29,6 +33,12 @@ class CalculateLoss(FiretaskBase):
         current_incar_params = self.get("current_incar_params")
         loss = loss_function()
         params_tried = self.get("params_tried")
+
+        logger.info("params tried: {}".format(params_tried))
+        logger.info("params tried, type: {}".format(type(params_tried)))
+        logger.info("current incar params: {}".format(current_incar_params))
+        logger.info("current incar params type: {}".format(
+            type(current_incar_params)))
 
         return FWAction(update_spec={"_push":
                                          {
