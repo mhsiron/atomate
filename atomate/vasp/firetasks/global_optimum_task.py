@@ -39,6 +39,7 @@ class CalculateLoss(FiretaskBase):
         logger.info("current incar params: {}".format(current_incar_params))
         logger.info("current incar params type: {}".format(
             type(current_incar_params)))
+        logger.info("loss: {}".format(loss))
 
         return FWAction(update_spec={"_push":
                                          {
