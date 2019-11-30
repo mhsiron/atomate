@@ -76,13 +76,12 @@ class AnalyzeLossAndDecideNextStep(FiretaskBase):
 
         if parents is not None:
             previous_results = fw_spec.get("results")
-        fws = load_and_launch(structure=structure,
+        wf = load_and_launch(structure=structure,
                              incar_grid=incar_grid,minimizer=minimizer,
                              previous_results=previous_results,
                              max_fw=max_fw, pmg_set=pmg_set,
                              pmg_set_kwargs=pmg_set_kwargs,
                              opt_kwargs=opt_kwargs)
-        wf = Workflow(fws)
         return FWAction(additions=wf)
 
 
@@ -151,7 +150,7 @@ def load_and_launch(structure, incar_grid, minimizer,
 
     def func(params):
         print(params)
-        if tuple(params) in list(previous_results.keys()):
+        if params in list(previous_results.keys()):
             # If we have already successfully run this calculation,
             # and we have supplied it,
             # we simply return the results of this calculation
@@ -207,4 +206,7 @@ def load_and_launch(structure, incar_grid, minimizer,
                                parents=fws,
                                spec={"_allow_fizzled_parents": True}))
     print("minimizer ran and stop")
-    return fws
+
+    wf = Workflow(fws, links_dict={fws[-1].id:[fw.id for fw in fws[:-1]]})
+
+    return wf
