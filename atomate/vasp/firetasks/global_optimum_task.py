@@ -207,6 +207,6 @@ def load_and_launch(structure, incar_grid, minimizer,
                                spec={"_allow_fizzled_parents": True}))
     print("minimizer ran and stop")
 
-    wf = Workflow(fws, links_dict={fws[-1].id:[fw.id for fw in fws[:-1]]})
+    wf = Workflow(fws, links_dict={fws[-1].fw_id:[fw.fw_id for fw in fws[:-1]]})
 
     return wf
