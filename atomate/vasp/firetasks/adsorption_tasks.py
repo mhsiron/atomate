@@ -55,6 +55,7 @@ class LaunchVaspFromOptimumDistance(FiretaskBase):
     It takes an 'idx' and 'site_idx' identifying variable to append the correct adosrbate
     on the correct slab surface at the optimal distance and then launches an OptimizeFW at
     that distance.
+    
     """
 
     required_params = ["adsorbate", "coord", "slab_structure",
