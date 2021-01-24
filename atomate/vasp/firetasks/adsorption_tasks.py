@@ -43,6 +43,7 @@ from pymatgen.command_line.bader_caller import BaderAnalysis
 from pymatgen.electronic_structure.core import OrbitalType
 from pymatgen.analysis.dimensionality import get_dimensionality_gorai
 from copy import deepcopy
+from pymatgen.io.vasp.inputs import Kpoints
 
 logger = get_logger(__name__)
 ref_elem_energy = {'H': -3.379, 'O': -7.459, 'C': -7.329}
@@ -214,7 +215,7 @@ class AnalyzeStaticOptimumDistance(FiretaskBase):
         distances = self["distances"]
         # distance_to_state = fw_spec["distance_to_state"][0]
         ads_comp = self["adsorbate"].composition
-        algo = self.get("algo", "standard")
+        algo = self.get("algo", "minimum")
         output_slab = self["slab_structure"]
         ads_energy = self.get("ads_energy")
 
@@ -658,6 +659,8 @@ class SlabAdsAdditionTask(FiretaskBase):
             "user_incar_settings", None)
         static_kpts_settings = static_fws_params.get(
             "user_kpoints_settings", None)
+        if not static_kpts_settings:
+            static_kpts_settings = Kpoints()
         find_args = ads_structures_params.get("find_args", {})
         if 'positions' not in find_args:
             find_args['positions'] = ['ontop', 'bridge', 'hollow']
@@ -913,7 +916,7 @@ class SlabAdsAdditionTask(FiretaskBase):
                             static_user_incar_settings=
                             static_user_incar_settings,
                             static_user_kpoints_settings=static_kpts_settings,
-                            vasp_cmd=vasp_cmd, db_file=db_file,
+                            vasp_cmd=">>vasp_gam<<", db_file=db_file,
                             vasptodb_kwargs={
                                 "task_fields_to_push": {
                                     "{}_energy".format(distance_idx):
