@@ -1818,7 +1818,6 @@ class AdsorptionAnalysisTask(FiretaskBase):
                          - ads_energy)
         stored_data['adsorption_energy'] = adsorption_en
 
-        # TODO: get differences between key electronic variables
         stored_data["electronic_descriptors"] = {
             "p_band_center_shift":
                 (slab_ads_data["p_band_center"]-slab_data["p_band_center"]),
