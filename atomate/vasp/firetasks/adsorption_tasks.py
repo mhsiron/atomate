@@ -1212,31 +1212,6 @@ class AnalysisAdditionTask(FiretaskBase):
                         output_slab_ads.add_site_property('surface_properties',
                                                           ordered_surf_prop)
 
-                    # Get adsorbate sites:
-                    # ads_sites = []
-                    # if surface_properties and id_map and output_slab_ads:
-                    #     ordered_surf_prop = [prop for new_id, prop in
-                    #                          sorted(zip(id_map,
-                    #                                     surface_properties))]
-                    #     output_slab_ads.add_site_property('surface_properties',
-                    #                                       ordered_surf_prop)
-                    #     ads_sites = [site for site in output_slab_ads.sites if
-                    #                  site.properties[
-                    #                      "surface_properties"] == "adsorbate"]
-                    # elif adsorbate and output_slab_ads:
-                    #     ads_sites = [output_slab_ads.sites[new_id] for new_id
-                    #                  in id_map[-adsorbate.num_sites:]]
-                    # ads_ids = [output_slab_ads.sites.index(site) for site in
-                    #            ads_sites]
-
-                    # Get Surface ads sites Sites:
-                    # NOT NEEDED?
-                    # nn_surface_list = get_nn_surface(output_slab_ads, ads_ids)
-                    # ads_adsorp_id, surf_adsorp_id = min(nn_surface_list,
-                    #                                     key=lambda x: x[2])[:2]
-                    # out_site_type, surface_ads_sites, distances = get_site_type(
-                    #     output_slab_ads, ads_adsorp_id, ads_ids, mvec)
-
                 except (ParseError, AssertionError):
                     pass
             except FileNotFoundError:
