@@ -1285,24 +1285,6 @@ class AnalysisAdditionTask(FiretaskBase):
                             total_surf_ads_pdos_overlap[str(surf_idx)][
                                 str(ads_idx)] = c_overlap
 
-            # for surf_ids, surf_prop in surface_ads_sites.items():
-            #     if not total_surf_ads_pdos_overlap.get(
-            #             surf_ids, False):
-            #         total_surf_ads_pdos_overlap[surf_ids] = {}
-            #     for ads_idx in ads_ids:
-            #         surf_idx = surf_prop['index']
-            #         surf_dos = complete_dos.get_site_dos(
-            #             complete_dos.structure.sites[surf_idx]
-            #         ).get_densities()
-            #         ads_dos = complete_dos.get_site_dos(
-            #             complete_dos.structure.sites[ads_idx]
-            #         ).get_densities()
-            #         c_overlap = np.trapz(get_overlap(surf_dos,
-            #                                          ads_dos),
-            #                              x=complete_dos.energies)
-            #         total_surf_ads_pdos_overlap[surf_ids][ads_idx] = \
-            #             c_overlap
-
             # Quantify overlap by orbital type
 
             # Elemental make-up of CBM and VBM
