@@ -629,10 +629,13 @@ class SlabAdsAdditionTask(FiretaskBase):
         if 'magmom' in list(output_slab.site_properties):
             output_slab.remove_site_property('magmom')
         for ads_idx, adsorbate in enumerate(adsorbates):
-            ads_energy = ads_energies.get(ads_idx) or \
-                         sum([adsorbate.composition.get(
-                             elt, 0)*ref_elem_energy.get(
-                             elt) for elt in ref_elem_energy])
+            if ads_energies:
+                ads_energy = ads_energies.get(ads_idx)
+            else:
+                ads_energy = sum([adsorbate.composition.get(
+                    elt, 0)*ref_elem_energy.get(
+                    elt) for elt in ref_elem_energy])
+
             if optimize_distance:
 
                 asf = AdsorbateSiteFinder(output_slab,
