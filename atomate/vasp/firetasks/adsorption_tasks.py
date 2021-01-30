@@ -41,6 +41,8 @@ from pymatgen.command_line.ddec6_caller import DDEC6Analysis
 from pymatgen.command_line.bader_caller import BaderAnalysis
 from pymatgen.electronic_structure.core import OrbitalType
 
+from pymatgen.io.vasp.outputs import Kpoints
+
 logger = get_logger(__name__)
 ref_elem_energy = {'H': -3.379, 'O': -7.459, 'C': -7.329}
 
@@ -667,8 +669,8 @@ class SlabAdsAdditionTask(FiretaskBase):
                             name=el_fw_name, structure=slab_ads,
                             vasp_input_set=static_input_set,
                             static_user_incar_settings=static_user_incar,
-                            static_user_kpoints_settings=static_kpts_settings,
-                            vasp_cmd=vasp_cmd, db_file=db_file,
+                            static_user_kpoints_settings=Kpoints(),
+                            vasp_cmd=">>gamma_vasp_cmd<<", db_file=db_file,
                             vasptodb_kwargs={
                                 "task_fields_to_push": {
                                     "{}_energy".format(distance_idx):
